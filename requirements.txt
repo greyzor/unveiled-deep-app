@@ -1,0 +1,7 @@
+cmake
+dlib
+face_recognition
+pillow
+flask
+flask_script
+opencv-python

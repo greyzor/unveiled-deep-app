@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}
+{{super()}}
+{% endblock %}
+{% block header %}
+  {{ super() }}
+  <br>HEADER
+  <style type="text/css">
+    .important { color: orange; }
+  </style>
+{% endblock %}
+{% block content %}
+  {{ super() }}
+  <p class="important">
+    <br>
+    {% if results['face_locations']|length > 0 %}
+      FOUND FACE !
+      <br>
+      <img src={{img_path}} alt="img_alt" width="300px"" height="200px" />
+
+      <br>
+      {% for img_src in cropped_imgs %}
+        <img src={{img_src}} alt="cropped_img_alt" width="300px"" height="200px" />
+      {% endfor %}
+
+      <br>
+      <img src={{img_path_final}} alt="img_alt" width="300px"" height="200px" />
+
+    {% else %}
+      NO FACE !
+    {% endif %}
+  </p>
+{% endblock %}
