@@ -3,6 +3,7 @@
 from flask import Blueprint, jsonify, url_for, redirect, g, current_app, abort, request
 from functools import partial, wraps
 import os
+import errno
 
 ERROR_CODES = [400, 401, 403, 404, 408]
 
@@ -29,3 +30,11 @@ def create_blueprint(name, import_name, url_prefix=None, jsonize=True, handle_ht
             bp.errorhandler(code)(_error_hanlder)
 
     return bp
+
+def mkdir_p(_dir):
+    """ """
+    try:
+        os.makedirs(_dir)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise

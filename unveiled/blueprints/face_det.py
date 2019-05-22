@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, abort, redirect, request
 from flask import current_app as app
 from jinja2.exceptions import TemplateNotFound
 from unveiled.lib.utils import create_blueprint
+from unveiled.lib.utils import mkdir_p
 from unveiled.services.face_det import find_face_locations
 from werkzeug import secure_filename
 import os
@@ -39,12 +40,14 @@ def show_infos():
             fname = secure_filename(file.filename)
             img_id = uuid.uuid4().hex
             fname = 'tmp-{fname}-{uid}.jpg'.format(fname=fname, uid=img_id)
-            fpath = os.path.join(app.config['UPLOAD_FOLDER'], fname)
+            upload_folder = app.config['UPLOAD_FOLDER']
+            mkdir_p(upload_folder)
+            fpath = os.path.join(upload_folder, fname)
             file.save(fpath)
             file.stream.seek(0) # seek to the beginning of file
 
             # The image file seems valid! Detect faces and return the result.
-            results = find_face_locations(file, out_dir=app.config['UPLOAD_FOLDER'])
+            results = find_face_locations(file, out_dir=upload_folder)
 
             # fpath = '/face_det/unveiled/static/images/avatar.jpg'
             img_dir = '../static/images'
