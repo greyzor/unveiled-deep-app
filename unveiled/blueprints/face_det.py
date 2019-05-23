@@ -100,11 +100,9 @@ def show_infos():
         if req_type == 'q':
             # request type: query
             query = request.form.get('query', "")
-            print('!!!!! %s !!!!!' % query)
-            assert len(query) > 0
-
             query = query or QUERY_TERM_DEFAULT
             query = query.split(' ')[0] # first term
+
             # overriding params
             url_ext = "{base_url}{query}".format(
                 base_url=RANDOM_IMAGES_BASE_URL, query=query
