@@ -1,33 +1,31 @@
 {% extends "layout.html" %}
+
 {% block title %}
-{{super()}}
+  {{super()}}
 {% endblock %}
+
 {% block header %}
   {{ super() }}
-  <br>HEADER
-  <style type="text/css">
-    .important { color: orange; }
-  </style>
+  <div style="margin-left: 80px; color: #f0f72c; font-weight: bold;"> &lt;Face Detection Module&gt; </div>
 {% endblock %}
-{% block content %}
-  {{ super() }}
-  <p class="important">
-    <br>
-    {% if results['face_locations']|length > 0 %}
-      FOUND FACE !
-      <br>
-      <img src={{img_path}} alt="img_alt" width="300px"" height="200px" />
 
+{% block content %}
+
+    {{ super() }}
+
+    {% if results['face_locations']|length > 0 %}
+      <div style="margin-bottom: 40px; ; background-color: white; color: black; padding: 1rem;">Detected {{ results['face_locations']|length }} faces ! </div>
+      <img src={{img_path_final}} alt="img_alt" />
       <br>
       {% for img_src in cropped_imgs %}
-        <img src={{img_src}} alt="cropped_img_alt" width="300px"" height="200px" />
+        <img src={{img_src}} alt="cropped_img_alt" />
       {% endfor %}
 
-      <br>
-      <img src={{img_path_final}} alt="img_alt" width="300px"" height="200px" />
-
     {% else %}
-      NO FACE !
+      <div style="margin-bottom: 40px; background-color: white; color: black; padding: 1rem;">No Face detected !</div>
+      <div>
+        <img src={{img_path}} alt="img_alt"/>
+      </div>
     {% endif %}
-  </p>
+
 {% endblock %}

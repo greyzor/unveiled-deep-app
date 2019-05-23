@@ -48,6 +48,7 @@ def show_infos():
     img_path_final = "#"
     file = None # file stream
     file_name = None
+    active_tab = "tab1"
 
     # Check if a valid image file was uploaded
     if request.method == 'POST':
@@ -83,6 +84,8 @@ def show_infos():
             file = FileStorage(stream=open(fpath,'rb'), filename=file_name)
             os.remove(fpath)
 
+            active_tab = "tab2"
+
         else:
             if 'file' not in request.files:
                 return redirect(request.url)
@@ -92,6 +95,8 @@ def show_infos():
 
             if file_name == '':
                 return redirect(request.url)
+
+            active_tab = "tab1"
 
         if file and allowed_file(file_name):
             # Saving the file.
@@ -113,6 +118,7 @@ def show_infos():
                                 results=results,
                                 img_path=img_path,
                                 cropped_imgs=cropped_imgs,
-                                img_path_final=img_path_final)
+                                img_path_final=img_path_final,
+                                active_tab=active_tab)
     except TemplateNotFound:
         abort(404)
