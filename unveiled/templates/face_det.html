@@ -15,16 +15,23 @@
 
     {% if results['face_locations']|length > 0 %}
       <div style="margin-bottom: 40px; ; background-color: white; color: black; padding: 1rem;">Detected {{ results['face_locations']|length }} faces ! </div>
-      <img src={{img_path_final}} alt="img_alt" />
+      <div style="width:800px; height: 450px;">
+        <img src={{img_path_final}}/>
+      </div>
       <br>
+
+      <div style="float: left">
       {% for img_src in cropped_imgs %}
-        <img src={{img_src}} alt="cropped_img_alt" />
+        <div style="width:200px; height: 112.5px; display: inline-block;">
+          <img src={{img_src}}/>
+        </div>
       {% endfor %}
+      </div>
 
     {% else %}
       <div style="margin-bottom: 40px; background-color: white; color: black; padding: 1rem;">No Face detected !</div>
-      <div>
-        <img src={{img_path}} alt="img_alt"/>
+      <div style="width:800px; height: 450px;">
+        <img src={{img_path}}/>
       </div>
     {% endif %}
 

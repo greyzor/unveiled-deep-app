@@ -14,3 +14,9 @@ header {
   color: white;
   text-align: left;
 }
+
+img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
