@@ -6,6 +6,21 @@ body {
   background-color: white;
 }
 
+.main {
+  display: flex; /* children can use property flex-grow to occupy all height */
+  flex-direction: column;
+  background-color: white;
+  height: 100vh; /* set fixed size to full screen */
+}
+
+.module-container {
+  flex-grow: 1; /* parent is flex, occupy all his height */
+  display: flex; /* children will have display inline-block */
+  background-color: #707070;
+  margin:0;
+  padding:0;
+}
+
 /*
  * Formatting the header area
  */

@@ -15,18 +15,21 @@
   })
 </script>
 
-<section>
+<div class="main">
 
   <div style="background-color: #ef215b; font-size:22px; font-weight: bold;">
     <div style="margin-left: 40px; padding: 1.2rem;">Unveiled</div>
   </div>
 
   <header style="padding: 0.9rem;">
+    <div style="margin-left: 80px; color: #f0f72c; font-weight: bold;">
+      &lt;Face Detection Module&gt;
+    </div>
     {% block header %}{% endblock %}
   </header>
 
-  <div style="display: flex;">
-    <div style="min-height:500px; width:30%; display:inline-block; background-color: #707070; margin:0; padding:0;">
+  <div class="module-container">
+    <div style="height: 100%; width:30%; display:inline-block;">
       <div style="margin-left: 20px; margin-right: 20px; padding:1rem;">
 
       <!-- Nav tabs -->
@@ -41,16 +44,16 @@
           </li>
           <li class="nav-item">
             {% if active_tab=="tab2" %}
-            <a class="nav-link active" data-toggle="tab" href="#tab2">External URL</a>
+            <a class="nav-link active" data-toggle="tab" href="#tab2">Browse the Web</a>
             {% else %}
-            <a class="nav-link" data-toggle="tab" href="#tab2">External URL</a>
+            <a class="nav-link" data-toggle="tab" href="#tab2">Browse the Web</a>
             {% endif %}
           </li>
           <li class="nav-item">
             {% if active_tab=="tab3" %}
-            <a class="nav-link active" data-toggle="tab" href="#tab3">Query</a>
+            <a class="nav-link active" data-toggle="tab" href="#tab3">Ask Query</a>
             {% else %}
-            <a class="nav-link" data-toggle="tab" href="#tab3">Query</a>
+            <a class="nav-link" data-toggle="tab" href="#tab3">Ask Query</a>
             {% endif %}
           </li>
         </ul>
@@ -128,4 +131,4 @@
     </div>
   </div>
 
-</section>
+</div>
