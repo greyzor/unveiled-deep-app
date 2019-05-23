@@ -13,6 +13,9 @@ import os
 import uuid
 import requests
 
+QUERY_TERM_DEFAULT = "face"
+RANDOM_IMAGES_BASE_URL = "https://source.unsplash.com/800x450/?"
+
 bp = create_blueprint('face_det', __name__, 'face_det', is_api=False)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -42,18 +45,31 @@ def save_file_local(file, file_name, upload_folder, img_id=None):
 @bp.route('/', methods=['POST', 'GET'])
 def show_infos():
     """ """
+    global RANDOM_IMAGES_BASE_URL
+    global QUERY_TERM_DEFAULT
+
     results = None
     img_path = "#"
     cropped_imgs = []
     img_path_final = "#"
     file = None # file stream
     file_name = None
-    active_tab = "tab1"
+    active_tab = None
 
     # Check if a valid image file was uploaded
     if request.method == 'POST':
 
+        query = request.form.get('query', None)
         url_ext = request.form.get('url_ext', None)
+
+        if query is not None:
+            query = query or QUERY_TERM_DEFAULT
+            first_term = query.split(' ')[0]
+            # overriding params
+            url_ext = "{base_url}{query}".format(
+                base_url=RANDOM_IMAGES_BASE_URL, query=first_term
+            )
+            active_tab = "tab3"
 
         if url_ext is not None and len(url_ext) > 0:
             print('Fetching images from external url: {url_ext}'.format(url_ext=url_ext))
@@ -84,7 +100,7 @@ def show_infos():
             file = FileStorage(stream=open(fpath,'rb'), filename=file_name)
             os.remove(fpath)
 
-            active_tab = "tab2"
+            active_tab = active_tab or "tab2"
 
         else:
             if 'file' not in request.files:
