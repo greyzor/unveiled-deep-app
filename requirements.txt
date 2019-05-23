@@ -5,6 +5,6 @@ pillow
 flask
 flask_script
 opencv-python
-newspaper
+newspaper3k==0.2.8
 requests
 uwsgi
