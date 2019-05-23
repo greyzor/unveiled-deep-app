@@ -5,3 +5,5 @@ pillow
 flask
 flask_script
 opencv-python
+newspaper
+requests
