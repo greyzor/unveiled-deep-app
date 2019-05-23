@@ -1,5 +1,6 @@
 """
 """
+from __future__ import absolute_import
 from flask import jsonify, g, session, Flask, request, render_template
 from werkzeug.utils import import_string
 from unveiled.config import DEBUG, LOG_FORMAT

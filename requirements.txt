@@ -7,3 +7,4 @@ flask_script
 opencv-python
 newspaper
 requests
+uwsgi
