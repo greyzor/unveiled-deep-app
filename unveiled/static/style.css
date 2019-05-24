@@ -6,6 +6,11 @@ body {
   background-color: white;
 }
 
+.div_hover:hover {
+  background-color: #fff;
+  cursor: pointer;
+}
+
 .main {
   display: flex; /* children can use property flex-grow to occupy all height */
   flex-direction: column;
