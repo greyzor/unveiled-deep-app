@@ -12,6 +12,21 @@
 
   {{ super() }}
 
-      Welcome on my awesome homepage.
+  <div style="text-align: left; margin-left: 50px; margin-top: 20px;">
+    <h2>Deep learning experiments.</h2>
+
+    <br>
+    <p>The purpose of this project is to provide an  exploration tool for recent deep learning techniques.</p>
+    <p>Right now, the application currently supports:</p>
+    <ul>
+      <li><b>Face detection</b>, based on face_recognition python package (dlib).</li>
+    </ul>
+    <p><b>Tutorial</b>: please use the data selection widget on the left panel to explore the algorithm's capabilities.</p>
+    <p><b>Limitations</b>: currently, detection accuracy is not very precise on face detection for unknown images. The model may need to be retrained and more robust for vector simple transforms (faces rotated/translated).</p>
+
+    <br>
+    <p>Links: You can access the github of the project at <a href='https://github.com/greyzor/unveiled-deep-app'>greyzor/unveiled-deep-app</a>. Please feel free to contribute, feedbacks are welcome.</p>
+
+  </div>
 
 {% endblock %}
