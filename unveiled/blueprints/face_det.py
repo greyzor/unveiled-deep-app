@@ -152,7 +152,7 @@ def handle_face_detection():
         if file and allowed_file(file_name):
             # Saving the file.
             upload_folder = app.config['UPLOAD_FOLDER']
-            file, fname = save_image_file_local(file, file_name, upload_folder, img_id=None) # random part in fname
+            file, fname = save_image_file_local(file, file_name, upload_folder, img_id=None)
 
             # The image file seems valid! Detect faces and return the result.
             results = find_face_locations(file, out_dir=upload_folder)
@@ -175,7 +175,8 @@ def handle_face_detection():
                                 img_path_final=img_path_final,
                                 active_tab=active_tab,
                                 query=query, # FIXME: frontend should handle its state.
-                                url_ext=url_ext # FIXME: frontend should handle its state.
+                                url_ext=url_ext, # FIXME: frontend should handle its state.
+                                ga_track_id=os.getenv('GA_TRACK_ID', '') # FIXME: inject from elsewhere.
                                 )
     except TemplateNotFound:
         abort(404)

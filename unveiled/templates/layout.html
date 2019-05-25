@@ -17,6 +17,18 @@
   })
 </script>
 
+{% if ga_track_id is defined %}
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_track_id }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', "{{ ga_track_id }}");
+</script>
+{% endif %}
+
 <div class="main">
 
   <div style="background-color: #ef215b; font-size:22px; font-weight: bold; padding: 1.2rem;">

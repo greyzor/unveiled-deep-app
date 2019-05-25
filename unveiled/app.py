@@ -32,7 +32,11 @@ def create_app():
     @app.route('/')
     def index():
         """ Root handler. """
-        return render_template('home.html', active_tab="tab1")
+        return render_template(
+            'home.html',
+            active_tab="tab1",
+            ga_track_id=os.getenv('GA_TRACK_ID', ''),
+        )
 
     # register error handlers
     app.register_error_handler(404, err_handlers.page_not_found)
