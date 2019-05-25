@@ -7,6 +7,7 @@ from werkzeug.utils import import_string
 from unveiled.config import DEBUG, LOG_FORMAT
 import logging
 import unveiled.err_handlers as err_handlers
+import os
 
 if DEBUG:
     loglevel = logging.DEBUG
