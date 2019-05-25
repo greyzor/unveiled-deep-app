@@ -1,4 +1,5 @@
 """
+Main Application.
 """
 from __future__ import absolute_import
 from flask import jsonify, g, session, Flask, request, render_template
@@ -17,9 +18,11 @@ api_blueprints = [
 ]
 
 def create_app():
+    """ Create flask application. """
     app = Flask(__name__)
     app.config.from_object('unveiled.config')
 
+    # Register blueprints
     for bp_name in api_blueprints:
         bp = import_string('%s.blueprints.%s:bp' % (__package__, bp_name))
         print('Registering bp: %s' % bp_name)
@@ -27,13 +30,13 @@ def create_app():
 
     @app.route('/')
     def index():
-        """ """
+        """ Root handler. """
         return render_template('home.html', active_tab="tab1")
 
     return app
 
 if __name__ == '__main__':
-    """ """
+    """ Main entrypoint. """
     logging.basicConfig(level=loglevel,
                         format=LOG_FORMAT,
                         datefmt='%Y-%m-%d %H:%M:%S %z')

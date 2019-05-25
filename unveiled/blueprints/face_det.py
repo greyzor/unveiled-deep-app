@@ -1,4 +1,5 @@
 """
+Face Detection Blueprint.
 """
 from flask import Blueprint, render_template, abort, redirect, request
 from flask import current_app as app
@@ -22,29 +23,32 @@ REQ_TYPE_DEFAULT = 'q' # query
 
 
 def allowed_file(filename):
-    """ """
+    """ Is filename allowed. """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def save_file_local(file, file_name, upload_folder, img_id=None):
-    """ """
+def save_image_file_local(file, file_name, upload_folder, img_id=None):
+    """ Helper to save image file locally """
+
     # Craft file name
     fname = secure_filename(file_name)
     img_id = img_id or uuid.uuid4().hex
     fname = 'tmp-{fname}-{uid}.jpg'.format(fname=fname, uid=img_id)
 
-    # Save to dir.
+    # Save image file.
     mkdir_p(upload_folder)
     fpath = os.path.join(upload_folder, fname)
     print('Saving to: %s' % fpath)
     file.save(fpath)
 
     file.stream.seek(0) # seek to the beginning of file
+
     return (file, fname)
 
 def fetch_image_from_url(url_ext):
-    """ """
+    """ Fetch an image from a given url. """
     print('Fetching images from external url: {url_ext}'.format(url_ext=url_ext))
+
     ## Check if there is we get a redirect
     r = requests.get(url_ext)
     print('url: %s' % r.url)
@@ -55,19 +59,19 @@ def fetch_image_from_url(url_ext):
     else:
         url_ext = r.url # update url to redirected one.
 
+    # Extract image from url.
     (top_img, _) = extract_image_url(url_ext, input_html=input_html)
     if not top_img:
         print('Assuming the redirected url points to the image..')
         top_img = url_ext
 
-    file_name = 'external.jpg' # FIXME
-
-    print('Opening remote file.. : %s' % top_img)
+    print('GET remote file.. : %s' % top_img)
     r = requests.get(top_img)
     fpath = '/tmp/ext-{uid}'.format(uid=uuid.uuid4().hex)
     with open(fpath, 'wb') as f:
         f.write(r.content)
 
+    file_name = 'external.jpg' # FIXME
     file = FileStorage(stream=open(fpath,'rb'), filename=file_name)
     os.remove(fpath)
 
@@ -75,26 +79,27 @@ def fetch_image_from_url(url_ext):
 
 
 @bp.route('/', methods=['POST', 'GET'])
-def show_infos():
-    """ """
+def handle_face_detection():
+    """ Handler for blueprint's root. """
     global RANDOM_IMAGES_BASE_URL
     global QUERY_TERM_DEFAULT
     global REQ_TYPE_DEFAULT
 
-    results = None
-    img_path = "#"
-    cropped_imgs = []
-    img_path_final = "#"
+    results = {'face_locations': []} # results dict containing face_locations field.
+    img_path = "#" # image url to be rendered in template, when no face detected.
+    cropped_imgs = [] # cropped images urls to be rendered in template.
+    img_path_final = "#" # image url to be rendered in template, when face detected.
     file = None # file stream
-    file_name = None
-    active_tab = None
-    query = ""
-    url_ext = ""
+    file_name = None # file name to use for saving final image locally.
+    active_tab = None # active tab
+    query = "" # default value for query param
+    url_ext = "" # default value for url_ext param
     req_type = REQ_TYPE_DEFAULT # type query by default
 
     # Check if a valid image file was uploaded
     if request.method == 'POST':
 
+        # Get request type: either query, url or file.
         req_type = request.args.get('type', REQ_TYPE_DEFAULT)
 
         if req_type == 'q':
@@ -107,29 +112,38 @@ def show_infos():
             url_ext = "{base_url}{query}".format(
                 base_url=RANDOM_IMAGES_BASE_URL, query=query
             )
+
+            # fetch image from url.
             (url_ext, file, file_name) = fetch_image_from_url(url_ext)
 
+            # set active tab
             active_tab = "tab3"
 
         elif req_type == 'url':
             # request type: url
             url_ext = request.form.get('url_ext', "")
 
+            # fetch image from url.
             if len(url_ext) > 0:
                 (url_ext, file, file_name) = fetch_image_from_url(url_ext)
+
+                # set active tab
                 active_tab = active_tab or "tab2"
 
-        elif req_type == 'f':
-            # request type: file
+        elif req_type == 'f': # request type: file
+
+            # no file provided, then redirect
             if 'file' not in request.files:
                 return redirect(request.url)
 
             file = request.files['file']
             file_name = file.filename
 
+            # file name empty, then redirect
             if file_name == '':
                 return redirect(request.url)
 
+            # set active tab
             active_tab = "tab1"
 
         else:
@@ -138,7 +152,7 @@ def show_infos():
         if file and allowed_file(file_name):
             # Saving the file.
             upload_folder = app.config['UPLOAD_FOLDER']
-            file, fname = save_file_local(file, file_name, upload_folder, img_id=None) # random part in fname
+            file, fname = save_image_file_local(file, file_name, upload_folder, img_id=None) # random part in fname
 
             # The image file seems valid! Detect faces and return the result.
             results = find_face_locations(file, out_dir=upload_folder)

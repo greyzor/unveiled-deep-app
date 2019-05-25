@@ -1,4 +1,5 @@
 """
+Flask commands defined here.
 """
 import os
 from flask_script import Manager
@@ -11,7 +12,7 @@ manager = Manager(app)
 
 @manager.command
 def run():
-    """ """
+    """ Run main application. """
     app.run()
 
 if __name__ == '__main__':

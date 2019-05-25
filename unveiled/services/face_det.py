@@ -1,4 +1,5 @@
 """
+Face Detection service.
 """
 import face_recognition
 from PIL import Image
@@ -7,14 +8,29 @@ import uuid
 import cv2
 
 def find_face_locations(file_stream, out_dir=None):
-    """ """
-    # Load the uploaded image file
+    """ Find face locations given a file.
+
+    :param file_stream: provided file stream.
+    :param out_dir: if provided, output directory to store images.
+
+    :returns: face locations, stored images (raw|modified, cropped) paths.
+    :rtype: dict(
+              'face_locations':list,
+              'cropped_imgs':list,
+              'img_src':'str'
+            )
+    """
+    img_src = None
+    face_locations = []
+    cropped_images = []
+
+    # Load image content.
     image = face_recognition.load_image_file(file_stream)
 
+    # Detect face locations
     face_locations = face_recognition.face_locations(image)
-    print("I found {} face(s) in this photograph.".format(len(face_locations)))
+    print("Found {} face(s) in this photograph.".format(len(face_locations)))
 
-    cropped_images = []
     for face_location in face_locations:
         # Print the location of each face in this image
         top, right, bottom, left = face_location
@@ -47,11 +63,13 @@ def find_face_locations(file_stream, out_dir=None):
         font = cv2.FONT_HERSHEY_DUPLEX
         cv2.putText(image, face_name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
-    img_id = uuid.uuid4().hex
-    img_src = 'annot-{img_id}.jpg'.format(img_id=img_id)
-    fpath = os.path.join(out_dir, img_src)
-    Image.fromarray(image).save(fpath)
-    print('Saving final image to: %s' % fpath)
+    # Save final annotated image
+    if out_dir is not None:
+        img_id = uuid.uuid4().hex
+        img_src = 'annot-{img_id}.jpg'.format(img_id=img_id)
+        fpath = os.path.join(out_dir, img_src)
+        Image.fromarray(image).save(fpath)
+        print('Saving final image to: %s' % fpath)
 
     return {
         "face_locations": face_locations,
