@@ -8,8 +8,8 @@
 
     {{ super() }}
 
-    {% if results['face_locations']|length > 0 %}
-      <div style="margin-bottom: 40px; ; background-color: white; color: black; padding: 1rem;">Detected {{ results['face_locations']|length }} faces ! </div>
+    {% if face_results['face_locations']|length > 0 %}
+      <div style="margin-bottom: 40px; ; background-color: white; color: black; padding: 1rem;">Detected {{ face_results['face_locations']|length }} faces ! </div>
       <div style="max-width:800px; height: 450px;">
         <img src={{img_path_final}}/>
       </div>
@@ -29,5 +29,13 @@
         <img src={{img_path}}/>
       </div>
     {% endif %}
+
+      <div>
+        <ul>
+          {% for class in img_classes %}
+            <li>{{class}}</li>
+          {% endfor %}
+        </ul>
+      </div>
 
 {% endblock %}

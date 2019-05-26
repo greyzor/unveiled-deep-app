@@ -13,6 +13,10 @@ from werkzeug.datastructures import FileStorage
 import os
 import uuid
 import requests
+from unveiled.services.image_classification import InceptionV3Classifier
+
+CLASSIFIER = InceptionV3Classifier(weights='imagenet') # FIXME: handle this task in separate workers.
+CLASSIFIER_MIN_THRESH = 0.20 # confidence threshold, used to select final classes to show
 
 bp = create_blueprint('face_det', __name__, 'face_det', is_api=False)
 
@@ -29,16 +33,15 @@ def allowed_file(filename):
 
 def save_image_file_local(file, file_name, upload_folder, img_id=None):
     """ Helper to save image file locally """
-
     # Craft file name
     fname = secure_filename(file_name)
     img_id = img_id or uuid.uuid4().hex
-    fname = 'tmp-{fname}-{uid}.jpg'.format(fname=fname, uid=img_id)
+    fname = 'tmp-{uid}-{fname}'.format(fname=fname, uid=img_id)
 
     # Save image file.
     mkdir_p(upload_folder)
     fpath = os.path.join(upload_folder, fname)
-    print('Saving to: %s' % fpath)
+    print('Saving file to: %s' % fpath)
     file.save(fpath)
 
     file.stream.seek(0) # seek to the beginning of file
@@ -68,10 +71,12 @@ def fetch_image_from_url(url_ext):
     print('GET remote file.. : %s' % top_img)
     r = requests.get(top_img)
     fpath = '/tmp/ext-{uid}'.format(uid=uuid.uuid4().hex)
+    print('Saving to: {}'.format(fpath))
     with open(fpath, 'wb') as f:
         f.write(r.content)
 
     file_name = 'external.jpg' # FIXME
+    print('Loading FileStorage() from: {}'.format(fpath))
     file = FileStorage(stream=open(fpath,'rb'), filename=file_name)
     os.remove(fpath)
 
@@ -84,8 +89,9 @@ def handle_face_detection():
     global RANDOM_IMAGES_BASE_URL
     global QUERY_TERM_DEFAULT
     global REQ_TYPE_DEFAULT
+    global CLASSIFIER
 
-    results = {'face_locations': []} # results dict containing face_locations field.
+    face_results = {'face_locations': []} # face_results dict containing face_locations field.
     img_path = "#" # image url to be rendered in template, when no face detected.
     cropped_imgs = [] # cropped images urls to be rendered in template.
     img_path_final = "#" # image url to be rendered in template, when face detected.
@@ -149,30 +155,37 @@ def handle_face_detection():
         else:
             raise Exception('Unsupported request type: %s' % req_type)
 
+        ## At this point, we have downloaded a file locally.
+        ## Lets process it and extract some nice features !
         if file and allowed_file(file_name):
             # Saving the file.
             upload_folder = app.config['UPLOAD_FOLDER']
             file, fname = save_image_file_local(file, file_name, upload_folder, img_id=None)
 
             # The image file seems valid! Detect faces and return the result.
-            results = find_face_locations(file, out_dir=upload_folder)
+            face_results = find_face_locations(file, out_dir=upload_folder)
 
-            # fpath = '/face_det/unveiled/static/images/avatar.jpg'
+            # Classify image contents.
+            res = CLASSIFIER.classify(os.path.join(upload_folder, fname), top=5)
+            print(res)
+            img_classes = [_t[1] for _t in filter(lambda t: t[2] > CLASSIFIER_MIN_THRESH ,res[0])]
+            print(img_classes)
+
             img_dir = '../static/images'
-
             img_path = os.path.join(img_dir, '{fname}'.format(fname=fname))
-            cropped_imgs = [os.path.join(img_dir, src) for src in results['cropped_imgs']]
-            img_path_final = os.path.join(img_dir, '{fname}'.format(fname=results['img_src']))
+            cropped_imgs = [os.path.join(img_dir, src) for src in face_results['cropped_imgs']]
+            img_path_final = os.path.join(img_dir, '{fname}'.format(fname=face_results['img_src']))
 
     if query: # either query, or url_ext
         url_ext = ""
 
     try:
         return render_template('face_det.html',
-                                results=results,
+                                face_results=face_results,
                                 img_path=img_path,
                                 cropped_imgs=cropped_imgs,
                                 img_path_final=img_path_final,
+                                img_classes=img_classes,
                                 active_tab=active_tab,
                                 query=query, # FIXME: frontend should handle its state.
                                 url_ext=url_ext, # FIXME: frontend should handle its state.

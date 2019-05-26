@@ -8,3 +8,5 @@ opencv-python
 newspaper3k==0.2.8
 requests
 uwsgi
+keras
+tensorflow
