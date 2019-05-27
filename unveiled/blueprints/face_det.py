@@ -95,6 +95,7 @@ def handle_face_detection():
     img_path = "#" # image url to be rendered in template, when no face detected.
     cropped_imgs = [] # cropped images urls to be rendered in template.
     img_path_final = "#" # image url to be rendered in template, when face detected.
+    img_classes = [] # detected image classes
     file = None # file stream
     file_name = None # file name to use for saving final image locally.
     active_tab = None # active tab
