@@ -58,7 +58,7 @@
                 {{class}}
               </div>
               <div style="margin-left: 20px; background-color: white; border: solid 1px grey; display: inline-block; padding: 1rem; border-radius: 50%;">
-                15%
+                {{"%.2f"|format(img_classes[class]*100)}} %
               </div>
             </div>
           {% endfor %}

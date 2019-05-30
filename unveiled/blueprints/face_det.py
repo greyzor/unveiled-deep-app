@@ -95,7 +95,7 @@ def handle_face_detection():
     img_path = "#" # image url to be rendered in template, when no face detected.
     cropped_imgs = [] # cropped images urls to be rendered in template.
     img_path_final = "#" # image url to be rendered in template, when face detected.
-    img_classes = [] # detected image classes
+    img_classes = {} # detected image classes dict: each key is class, value is confidence score.
     file = None # file stream
     file_name = None # file name to use for saving final image locally.
     active_tab = None # active tab
@@ -169,7 +169,9 @@ def handle_face_detection():
             # Classify image contents.
             res = CLASSIFIER.classify(os.path.join(upload_folder, fname), top=5)
             print(res)
-            img_classes = [_t[1] for _t in filter(lambda t: t[2] > CLASSIFIER_MIN_THRESH ,res[0])]
+            img_classes = dict([(_t[1], _t[2])
+                for _t in filter(lambda t: t[2] > CLASSIFIER_MIN_THRESH, res[0])
+            ])
             print(img_classes)
 
             img_dir = '../static/images'
