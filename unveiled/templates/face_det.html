@@ -8,34 +8,63 @@
 
     {{ super() }}
 
-    {% if face_results['face_locations']|length > 0 %}
-      <div style="margin-bottom: 40px; ; background-color: white; color: black; padding: 1rem;">Detected {{ face_results['face_locations']|length }} faces ! </div>
-      <div style="max-width:800px; height: 450px;">
-        <img src={{img_path_final}}/>
-      </div>
-      <br>
-
-      <div style="float: left">
-      {% for img_src in cropped_imgs %}
-        <div style="max-width:200px; height: 112.5px; display: inline-block;">
-          <img src={{img_src}}/>
+    <div>
+        <div style="margin-bottom: 40px; text-align: left; margin-left: 40px; background-color: white; color: black; padding: 1rem;">
+          <div>Detected: {{ face_results['face_locations']|length }} face(s)</div>
+          <div>Detected: {{ img_classes|length }} meta(s)</div>
         </div>
-      {% endfor %}
+    </div>
+
+    <div style="margin-left: 40px">
+      <div style="display: inline-block; float:left;">
+        {% if face_results['face_locations']|length > 0 %}
+          <div style="max-width:800px; height: 450px;">
+            <img src={{img_path_final}}/>
+          </div>
+          <br>
+        {% else %}
+          <div style="max-width:800px; height: 450px;">
+            <img src={{img_path}}/>
+          </div>
+        {% endif %}
       </div>
 
-    {% else %}
-      <div style="margin-bottom: 40px; background-color: white; color: black; padding: 1rem;">No Face detected !</div>
-      <div style="max-width:800px; height: 450px;">
-        <img src={{img_path}}/>
-      </div>
-    {% endif %}
+      <div style="display: inline-block; vertical-align:top; text-align: left; margin-left: 40px; float:left;">
 
-      <div>
-        <ul>
-          {% for class in img_classes %}
-            <li>{{class}}</li>
+        {% if cropped_imgs|length > 0 %}
+          <div style="font-weight: bold;">
+            Faces:
+          </div>
+        {% endif %}
+        <div style="background-color: white;">
+          {% for img_src in cropped_imgs %}
+            <div style="max-width:200px; height: 112.5px;">
+              <img src={{img_src}}/>
+            </div>
           {% endfor %}
-        </ul>
+        </div>
+
+        <div style="font-weight: bold; margin-top: 30px; text-align: left;">
+          <div>
+            {% if img_classes|length > 0 %}
+              <div>
+                Metas:
+              </div>
+            {% endif %}
+          </div>
+          {% for class in img_classes %}
+            <div>
+              <div style="background-color: white; display: inline-block; padding: 1rem;">
+                {{class}}
+              </div>
+              <div style="margin-left: 20px; background-color: white; border: solid 1px grey; display: inline-block; padding: 1rem; border-radius: 50%;">
+                15%
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
       </div>
+    </div>
 
 {% endblock %}
