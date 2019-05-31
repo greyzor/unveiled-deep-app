@@ -8,14 +8,14 @@ from unveiled.lib.utils import create_blueprint
 from unveiled.lib.utils import mkdir_p
 from unveiled.services.face_det import find_face_locations
 from unveiled.services.url_parser import extract_image_url
+from unveiled.services.remote_worker import remote_classify_images
+
 from werkzeug import secure_filename
 from werkzeug.datastructures import FileStorage
 import os
 import uuid
 import requests
-from unveiled.services.image_classification import InceptionV3Classifier
 
-CLASSIFIER = InceptionV3Classifier(weights='imagenet') # FIXME: handle this task in separate workers.
 CLASSIFIER_MIN_THRESH = 0.20 # confidence threshold, used to select final classes to show
 
 bp = create_blueprint('face_det', __name__, 'face_det', is_api=False)
@@ -166,11 +166,15 @@ def handle_face_detection():
             # The image file seems valid! Detect faces and return the result.
             face_results = find_face_locations(file, out_dir=upload_folder)
 
-            # Classify image contents.
-            res = CLASSIFIER.classify(os.path.join(upload_folder, fname), top=5)
-            print(res)
-            img_classes = dict([(_t[1], _t[2])
-                for _t in filter(lambda t: t[2] > CLASSIFIER_MIN_THRESH, res[0])
+            # Classify image contents, call remote worker.
+            img_path = os.path.join(upload_folder, fname)
+            res = remote_classify_images(img_path)
+            assert(res['status'] == 'done')
+            res = res['results']
+
+            # Filter classifications based on score threshold.
+            img_classes = dict([(_t[1], float(_t[2]))
+                for _t in filter(lambda t: float(t[2]) > CLASSIFIER_MIN_THRESH, res)
             ])
             print(img_classes)
 
