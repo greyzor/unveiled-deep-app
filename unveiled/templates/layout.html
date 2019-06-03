@@ -33,8 +33,12 @@
 $(document).ready(function() {
   /* Clicking on the quickstart-btn */
   $("#quickstart-btn").click(function() {
-    $("#content-container").fadeOut("slow", function(){
+      // Reload page with query results
+      $("#detect-by-query-btn").click();
+  });
+  $("#detect-by-query-btn").click(function() {
 
+    $("#content-container").fadeOut("slow", function(){
       // Show animation
       $("#content-container").html(
         '<div class="spinner">\
@@ -46,10 +50,6 @@ $(document).ready(function() {
         </div>\
         <div>Processing a random face image..</div>'
       ).fadeIn();
-
-      // Reload page with query results
-      $("#detect-by-query-btn").click();
-
     });
   });
 
