@@ -13,19 +13,32 @@
   {{ super() }}
 
   <div style="text-align: left; margin-left: 50px; margin-top: 20px;">
-    <h2>Deep learning for images -- experiments.</h2>
+    <h2>Deep learning experiments on images.</h2>
 
     <br>
     <p>The purpose of this project is to provide an  exploration tool for recent deep learning techniques.</p>
     <p>Right now, the application supports:</p>
     <ul>
       <li><b>Face detection</b>, based on face_recognition python package (dlib).</li>
+      <li><b>Objects (Tags) recognition in image</b>, based on Inceptionv3 state-of-the-art models.</li>
     </ul>
     <p><b>Tutorial</b>: please use the data selection widget on the left panel to explore the algorithm's capabilities.</p>
     <p><b>Limitations</b>: currently, detection accuracy is not very precise on face detection for unknown images. The model may need to be retrained and more robust for vector simple transforms (faces rotated/translated).</p>
 
+    <div style='text-align: center; margin: 20px 30% 20px 30%;'>
+      <button type="submit" class="btn btn-block btn-info mb-2" style="padding:0.7rem;">Quick Start !</button>
+    </div>
+
     <br>
-    <p><b>Links</b>: You can access the github of the project at <a target='_blank' href='https://github.com/greyzor/unveiled-deep-app'>greyzor/unveiled-deep-app</a>. Please feel free to contribute, feedbacks are welcome.</p>
+    <b>Links</b>:<br>
+      <ul>
+        <li>
+          You can access the github of the project at <a target='_blank' href='https://github.com/greyzor/unveiled-deep-app'>@greyzor/unveiled-deep-app</a>. Please feel free to contribute, feedbacks are welcome.
+        </li>
+        <li>
+          A separate worker executes all tasks related to Inceptionv3. The project is available here: <a target='_blank' href='https://github.com/greyzor/unveiled-inception-worker'>@greyzor/unveiled-inception-worker</a>.
+        </li>
+      </ul>
 
   </div>
 
