@@ -45,6 +45,12 @@
         </div>
 
         <div style="font-weight: bold; margin-top: 30px; text-align: left;">
+        {% if img_classification_error is sameas true %}
+          <div style="margin: auto; padding: 1rem; text-align: center; background-color: #ce2751; color: white; font-weight: normal;">
+            Metadata service Timeout.<br/>Please retry your same query.
+          </div>
+
+        {% else %}
           <div>
             {% if img_classes|length > 0 %}
               <div>
@@ -62,6 +68,8 @@
               </div>
             </div>
           {% endfor %}
+
+        {% endif %}
         </div>
 
       </div>

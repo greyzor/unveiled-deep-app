@@ -96,6 +96,7 @@ def handle_face_detection():
     cropped_imgs = [] # cropped images urls to be rendered in template.
     img_path_final = "#" # image url to be rendered in template, when face detected.
     img_classes = {} # detected image classes dict: each key is class, value is confidence score.
+    img_classification_error = False
     file = None # file stream
     file_name = None # file name to use for saving final image locally.
     active_tab = None # active tab
@@ -169,7 +170,8 @@ def handle_face_detection():
             # Classify image contents, call remote worker.
             img_path = os.path.join(upload_folder, fname)
             res = remote_classify_images(img_path)
-            assert(res['status'] == 'done')
+            print('remote inceptionv3 classification took: {} sec.'.format(res['timing']))
+            img_classification_error = bool(res['status']!='done')
             res = res['results']
 
             # Filter classifications based on score threshold.
@@ -193,6 +195,7 @@ def handle_face_detection():
                                 cropped_imgs=cropped_imgs,
                                 img_path_final=img_path_final,
                                 img_classes=img_classes,
+                                img_classification_error=img_classification_error,
                                 active_tab=active_tab,
                                 query=query, # FIXME: frontend should handle its state.
                                 url_ext=url_ext, # FIXME: frontend should handle its state.
