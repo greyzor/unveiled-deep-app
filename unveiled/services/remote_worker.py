@@ -3,6 +3,8 @@
 from flask import current_app as app
 import requests
 import os
+import json
+import traceback
 
 EMPTY_RESULTS = {
     "status": "error",
@@ -28,8 +30,16 @@ def remote_classify_images(img_path):
         app.config['BASEURL_REMOTE_WORKER_INCEPTION'],
         'api/1/classify'
     )
+    # call the remote service
     try:
         res = requests.post(url, data=img, timeout=REQUEST_TIMEOUT)
     except (requests.Timeout, requests.ConnectionError):
         return EMPTY_RESULTS
-    return res.json()
+
+    # convert results to json
+    try:
+        data = res.json()
+    except json.decoder.JSONDecodeError as e:
+        print('[error]{}\n{}'.format(traceback.format_exc(),e))
+        return EMPTY_RESULTS
+    return data
