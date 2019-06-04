@@ -36,7 +36,7 @@ $(document).ready(function() {
       // Reload page with query results
       $("#detect-by-query-btn").click();
   });
-  $("#detect-by-query-btn").click(function() {
+  $(".detection-btn").click(function() {
 
     $("#content-container").fadeOut("slow", function(){
       // Show animation
@@ -126,7 +126,7 @@ $(document).ready(function() {
                   </div>
                 </div>
               </div>
-              <button type="submit" class="btn btn-success mb-2">Process</button>
+              <button type="submit" class="btn btn-success mb-2 detection-btn">Process</button>
             </form>
 
           </div>
@@ -146,7 +146,7 @@ $(document).ready(function() {
                   </div>
                 </div>
               </div>
-              <button formaction="/face_det/?type=url" type="submit" class="btn btn-success mb-2">Process</button>
+              <button formaction="/face_det/?type=url" type="submit" class="btn btn-success mb-2 detection-btn">Process</button>
             </form>
           </div>
 
@@ -165,7 +165,7 @@ $(document).ready(function() {
                   </div>
                 </div>
               </div>
-              <button id="detect-by-query-btn" formaction="/face_det/?type=q" type="submit" class="btn btn-success mb-2">Process</button>
+              <button id="detect-by-query-btn" formaction="/face_det/?type=q" type="submit" class="btn btn-success mb-2 detection-btn">Process</button>
             </form>
           </div>
 
