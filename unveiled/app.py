@@ -7,6 +7,7 @@ from werkzeug.utils import import_string
 from unveiled.config import DEBUG, LOG_FORMAT
 import logging
 import unveiled.err_handlers as err_handlers
+from unveiled.scheduler import init_scheduled_jobs
 import os
 
 if DEBUG:
@@ -39,10 +40,21 @@ def create_app():
             ga_track_id=os.getenv('GA_TRACK_ID', ''),
         )
 
+    @app.route('/api/1/status')
+    def status():
+        """ Status api handler. """
+        return jsonify({
+            "status": "ok"
+        })
+
     # register error handlers
     app.register_error_handler(404, err_handlers.page_not_found)
     app.register_error_handler(403, err_handlers.page_forbidden)
     app.register_error_handler(500, err_handlers.internal_server_error)
+
+    # init scheduler
+    with app.app_context():
+        _ = init_scheduled_jobs() # returns scheduler object
 
     return app
 
