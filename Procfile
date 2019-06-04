@@ -1,1 +1,1 @@
-web: uwsgi --socket 0.0.0.0:$PORT --protocol=http --manage-script-name -w manage:app
+web: uwsgi --socket 0.0.0.0:$PORT --protocol=http --manage-script-name --enable-threads -w manage:app
