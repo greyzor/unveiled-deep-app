@@ -54,7 +54,7 @@ def create_app():
 
     # init scheduler
     with app.app_context():
-        _ = init_scheduled_jobs() # returns scheduler object
+        init_scheduled_jobs() # returns scheduler object
 
     return app
 

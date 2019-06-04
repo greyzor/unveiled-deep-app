@@ -4,6 +4,9 @@ Scheduled Periodic jobs.
 from flask import current_app as app
 from apscheduler.schedulers.background import BackgroundScheduler
 import requests
+import apscheduler
+
+SCHEDULER = BackgroundScheduler()
 
 def _refresh_apis(urls):
     """ Refresh list of apis registered in config, using default http/s GET"""
@@ -14,12 +17,13 @@ def _refresh_apis(urls):
 def init_scheduled_jobs():
     """ Init scheduler to run period jobs.
     Should be called within flask app context.
-
-    :returns: scheduler object
     """
+    global SCHEDULER
+
     print('[scheduler] adding_new_job: refresh apis !')
-    scheduler = BackgroundScheduler()
-    job = scheduler.add_job(
+    print(SCHEDULER.get_jobs())
+
+    job = SCHEDULER.add_job(
         _refresh_apis,
         'interval',
         minutes=app.config['REFRESH_PERIOD'],
@@ -27,5 +31,4 @@ def init_scheduled_jobs():
             'urls': app.config['REFRESH_URLS']
         }
     )
-    scheduler.start()
-    return scheduler
+    SCHEDULER.start()
