@@ -8,3 +8,4 @@ REFRESH_URLS = [
 	'https://unveiled-inception-worker-api.herokuapp.com/api/1/status'
 ]
 REFRESH_PERIOD = 12 # minutes
+REFRESH_INTERVAL = ['9:00:00', '23:00:00']
